@@ -4,15 +4,13 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:hn_shared/hn_shared.dart';
 
-import 'articles_controller.dart' show HNApi;
 import 'cache.dart';
 
-class HNService implements HNApi {
-  final viewCache = Cache<ArticleView, List<int>>();
-  final articleCache = Cache<int, Map>();
-  final itemCache = Cache<int, Map>();
+class HNApi {
+  final viewCache = Cache<ArticleView, String>();
+  final itemCache = Cache<int, String>();
 
-  @override
+  /// Return a list of articles. Cached.
   Future<List<Map>> articles(ArticleView view, int page) async {
     final ids = await _getArticleIds(view);
     final paginatedIds = _paginate<int>(ids, page);
@@ -20,33 +18,49 @@ class HNService implements HNApi {
     return items;
   }
 
-  /// A helper function to get from Hacker News and decode JSON
-  Future<dynamic> _get(String path) async {
-    final response = await get('https://hacker-news.firebaseio.com/v0/$path.json');
-    return jsonDecode(response.body);
+  Future<Map> comments(int id) async {
+    void _fetchKids(Map map) async {
+      final kids = map['kids'];
+
+      if (kids != null) {
+        final items = List<int>.from(kids);
+        map['kids'] = await _getItems(items);
+        map['kids'].forEach((m) => _fetchKids(m));
+      }
+    }
+
+    final page = await _getItems([id]).then((r) => r.first);
+    _fetchKids(page);
+    return page;
   }
+
+  /// A helper function to get from Hacker News and decode JSON
+  Future<String> _get(String path) =>
+      get('https://hacker-news.firebaseio.com/v0/$path.json').then((r) => r.body);
 
   /// Retreive the list of article ids based on the view
   /// maximum response is 500 items. Auto caching with ArticleView as keys.
   Future<List<int>> _getArticleIds(ArticleView view) async {
-    final idsPath = _viewToPath(view);
-    final fetchIds = _get(idsPath).then((r) => List<int>.from(r));
-    final itemIds = await viewCache.fetch(view, fetchIds);
+    final fetchJson = _get(_viewToPath(view));
+    final result = await viewCache.fetch(view, fetchJson);
+    final ids = List<int>.from(jsonDecode(result));
 
-    return itemIds;
+    return ids;
   }
 
   /// Retreive a list of items from our memoized automatic cache
   Future<List<Map>> _getItems(List<int> ids, {bool showKids = true}) async {
-    final fetchItem = (int id) => _get("item/$id").then((r) {
-          final result = Map.from(r);
-          if (!showKids) result.remove("kids");
-          return result;
-        });
+    final getJson = (int id) => _get("item/$id");
 
-    final futures = ids.map((id) => itemCache.fetch(id, fetchItem(id)));
-    final maps = await Future.wait<Map>(futures);
+    final futures = ids.map((id) => itemCache.fetch(id, getJson(id)));
+    final results = await Future.wait<String>(futures);
+    final maps = results.map((json) => Map.from(jsonDecode(json))).toList();
 
+    if (!showKids) {
+      maps.forEach((m) => m.remove("kids"));
+    }
+
+    /// break map association?
     return maps;
   }
 

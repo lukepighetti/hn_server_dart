@@ -1,9 +1,9 @@
 import 'harness/app.dart';
 
 Future main() async {
-  final harness = Harness()..install();
+  // final harness = Harness()..install();
 
-  test("GET /example returns 200 {'key': 'value'}", () async {
-    expectResponse(await harness.agent.get("/example"), 200, body: {"key": "value"});
-  });
+  // test("GET /articles/top returns 200", () async {
+  //   expectResponse(await harness.agent.get("/articles/top/1"), 200);
+  // });
 }

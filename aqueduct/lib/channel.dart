@@ -1,6 +1,9 @@
 import 'hn_aqueduct.dart';
+
 import 'src/articles_controller.dart';
-import 'src/hn_service.dart';
+import 'src/comments_controller.dart';
+
+import 'src/hn_api.dart';
 
 class HnAqueductChannel extends ApplicationChannel {
   @override
@@ -14,12 +17,13 @@ class HnAqueductChannel extends ApplicationChannel {
   Controller get entryPoint {
     final router = Router();
 
-    final api = HNService();
-    final articles = ArticlesController(api);
+    final api = HNApi();
+    final articles = ArticlesController(api.articles);
+    final comments = CommentsController(api.comments);
 
     router
       ..route("/articles/:type/[:page]").link(() => articles)
-      ..route("/v1/item/:id").link(() => UnsupportedController())
+      ..route("/comments/:id").link(() => comments)
       ..route("/v1/user/:id").link(() => UnsupportedController());
 
     return router;

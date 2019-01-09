@@ -1,9 +1,9 @@
 import '../hn_aqueduct.dart';
 
 class ArticlesController extends Controller {
-  final HNApi api;
+  final Future<List<Map>> Function(ArticleView view, int page) articles;
 
-  ArticlesController(this.api);
+  ArticlesController(this.articles);
 
   @override
   FutureOr<RequestOrResponse> handle(Request request) async {
@@ -22,7 +22,7 @@ class ArticlesController extends Controller {
       page = "1";
     }
 
-    final response = await api.articles(view, int.parse(page));
+    final response = await articles(view, int.parse(page));
     return Response.ok(response);
   }
 
@@ -38,9 +38,4 @@ class ArticlesController extends Controller {
 
     return map[type];
   }
-}
-
-abstract class HNApi {
-  Future<List<Map>> articles(ArticleView view, int page);
-  // Future<List<Map>> comments(ArticleView view, int page);
 }
