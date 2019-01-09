@@ -47,7 +47,7 @@ class Cache<K, V> {
   /// If the key has expired, it will automatically perform the fetching operation.
   ///
   /// Note: we cannot explicitly return `null` values
-  FutureOr<V> fetch(K key, FutureOr<V> futureValue) async {
+  Future<V> fetch(K key, FutureOr<V> futureValue) async {
     final value = _store[key];
     final expiration = _expirations[key];
     final now = DateTime.now();
