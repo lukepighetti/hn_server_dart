@@ -19,18 +19,22 @@ class HNApi {
   }
 
   Future<Map> comments(int id) async {
-    void _fetchKids(Map map) async {
+    Future<Map> _fetchKids(Map map) async {
       final kids = map['kids'];
 
       if (kids != null) {
-        final items = List<int>.from(kids);
-        map['kids'] = await _getItems(items);
-        map['kids'].forEach((m) => _fetchKids(m));
+        final ids = List<int>.from(kids);
+        final items = await _getItems(ids);
+        final futures = items.map((m) => _fetchKids(m));
+        map['kids'] = await Future.wait<Map>(futures);
       }
+
+      return map;
     }
 
-    final page = await _getItems([id]).then((r) => r.first);
-    _fetchKids(page);
+    final page =
+        await _getItems([id]).then((r) => r.first).then((page) => _fetchKids(page));
+
     return page;
   }
 
