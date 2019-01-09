@@ -41,6 +41,6 @@ class ArticlesController extends Controller {
 }
 
 abstract class HNApi {
-  Future<List<int>> articles(ArticleView view, int page);
+  Future<List<Map>> articles(ArticleView view, int page);
   // Future<List<Map>> comments(ArticleView view, int page);
 }

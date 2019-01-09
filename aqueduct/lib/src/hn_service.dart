@@ -13,10 +13,11 @@ class HNService implements HNApi {
   final itemCache = Cache<int, Map>();
 
   @override
-  Future<List<int>> articles(ArticleView view, int page) async {
+  Future<List<Map>> articles(ArticleView view, int page) async {
     final ids = await _getArticleIds(view);
-
-    return _paginate<int>(ids, page);
+    final paginatedIds = _paginate<int>(ids, page);
+    final items = await _getItems(paginatedIds);
+    return items;
   }
 
   /// A helper function to get from Hacker News and decode JSON
@@ -33,6 +34,16 @@ class HNService implements HNApi {
     final itemIds = await viewCache.fetch(view, fetchIds);
 
     return itemIds;
+  }
+
+  /// Retreive a list of items from our memoized automatic cache
+  Future<List<Map>> _getItems(List<int> ids) async {
+    final fetchItem = (int id) => _get("item/$id").then((r) => Map.from(r));
+
+    final futures = ids.map((id) => itemCache.fetch(id, fetchItem(id)));
+    final maps = await Future.wait<Map>(futures);
+
+    return maps;
   }
 
   /// Handle pagination of a list. Should return an empty list
