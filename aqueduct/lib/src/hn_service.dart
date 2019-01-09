@@ -16,7 +16,7 @@ class HNService implements HNApi {
   Future<List<Map>> articles(ArticleView view, int page) async {
     final ids = await _getArticleIds(view);
     final paginatedIds = _paginate<int>(ids, page);
-    final items = await _getItems(paginatedIds);
+    final items = await _getItems(paginatedIds, showKids: false);
     return items;
   }
 
@@ -37,8 +37,12 @@ class HNService implements HNApi {
   }
 
   /// Retreive a list of items from our memoized automatic cache
-  Future<List<Map>> _getItems(List<int> ids) async {
-    final fetchItem = (int id) => _get("item/$id").then((r) => Map.from(r));
+  Future<List<Map>> _getItems(List<int> ids, {bool showKids = true}) async {
+    final fetchItem = (int id) => _get("item/$id").then((r) {
+          final result = Map.from(r);
+          if (!showKids) result.remove("kids");
+          return result;
+        });
 
     final futures = ids.map((id) => itemCache.fetch(id, fetchItem(id)));
     final maps = await Future.wait<Map>(futures);
