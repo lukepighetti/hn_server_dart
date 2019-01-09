@@ -5,7 +5,7 @@ class Cache<K, V> {
   final Duration _timeout;
 
   Cache([this._timeout = const Duration(minutes: 10)]) {
-    final purgeTime = Duration(seconds: _timeout.inSeconds ~/ 100);
+    final purgeTime = Duration(seconds: 1);
 
     Timer.periodic(
       purgeTime,
@@ -21,15 +21,9 @@ class Cache<K, V> {
     _expirations[key] = DateTime.now().add(_timeout);
   }
 
-  V _remove(K key) {
-    final value = _store[key];
-
-    if (value != null) {
-      _store.remove(key);
-      _expirations.remove(key);
-    }
-
-    return value;
+  void _remove(K key) {
+    _store.remove(key);
+    _expirations.remove(key);
   }
 
   V read(K key) => _store[key];
@@ -49,8 +43,11 @@ class Cache<K, V> {
   void _purge() {
     final now = DateTime.now();
     final keys =
-        _expirations.entries.where((m) => m.value.isBefore(now)).map((m) => m.key);
+        _expirations.entries.where((m) => now.isAfter(m.value)).map((m) => m.key);
 
-    keys.forEach((key) => _remove(key));
+    if (keys.isNotEmpty) {
+      keys.forEach((key) => _remove(key));
+      print('purged ${keys.length} keys');
+    }
   }
 }
