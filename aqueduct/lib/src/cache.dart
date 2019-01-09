@@ -35,7 +35,7 @@ class Cache<K, V> {
   }
 
   /// Remove an item from the store and expire it
-  void _remove(K key) {
+  void expire(K key) {
     _store.remove(key);
     _expirations.remove(key);
   }
@@ -47,7 +47,7 @@ class Cache<K, V> {
   /// If the key has expired, it will automatically perform the fetching operation.
   ///
   /// Note: we cannot explicitly return `null` values
-  Future<V> fetch(K key, Future<V> futureValue) async {
+  FutureOr<V> fetch(K key, FutureOr<V> futureValue) async {
     final value = _store[key];
     final expiration = _expirations[key];
     final now = DateTime.now();
@@ -65,12 +65,7 @@ class Cache<K, V> {
   void _purge() {
     final now = DateTime.now();
 
-    _expirations.forEach((key, expiration) {
-      if (now.isAfter(expiration)) {
-        _remove(key);
-
-        print('purged ${key}');
-      }
-    });
+    _store.removeWhere((key, value) => now.isAfter(_expirations[key]));
+    _expirations.removeWhere((key, expiration) => now.isAfter(expiration));
   }
 }
