@@ -1,25 +1,42 @@
 import '../hn_aqueduct.dart';
 
 class ArticlesController extends Controller {
-  @override
-  FutureOr<RequestOrResponse> handle(Request request) {
-    final type = request.path.variables['type'];
+  final HNApi api;
 
-    final endpoints = {
-      "top": "topStories",
-      "new": "newStories",
-      "show": "showStories",
-      "ask": "showStories",
-      "job": "jobStories",
-      "best": "bestStories"
+  ArticlesController(this.api);
+
+  @override
+  FutureOr<RequestOrResponse> handle(Request request) async {
+    final type = request.path.variables['type'];
+    final view = _typeToView(type);
+    final page = request.path.variables['page'];
+
+    if (view == null)
+      return Response.notFound(
+        body: {"error": "view must be top, new, best, ask show, job"},
+      );
+    else if (page == null || page.isEmpty)
+      return Response.notFound(body: {"error": "please specify a page"});
+
+    final response = await api.articles(view, int.parse(page));
+    return Response.ok(response);
+  }
+
+  ArticleView _typeToView(String type) {
+    final Map<String, ArticleView> map = {
+      "top": ArticleView.topStories,
+      "new": ArticleView.newStories,
+      "best": ArticleView.bestStories,
+      "ask": ArticleView.askStories,
+      "show": ArticleView.showStories,
+      "job": ArticleView.jobStories,
     };
 
-    final endpoint = endpoints[type];
-
-    if (endpoint == null) {
-      return Response.notFound(body: "type $type is not supported");
-    }
-
-    return Response.ok("you requested type ${endpoint}");
+    return map[type];
   }
+}
+
+abstract class HNApi {
+  Future<List<int>> articles(ArticleView view, int page);
+  // Future<List<Map>> comments(ArticleView view, int page);
 }

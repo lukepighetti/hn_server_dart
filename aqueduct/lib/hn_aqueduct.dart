@@ -9,3 +9,5 @@ export 'dart:io';
 export 'package:aqueduct/aqueduct.dart';
 
 export 'channel.dart';
+
+export 'package:hn_shared/hn_shared.dart';
