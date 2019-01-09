@@ -9,14 +9,18 @@ class ArticlesController extends Controller {
   FutureOr<RequestOrResponse> handle(Request request) async {
     final type = request.path.variables['type'];
     final view = _typeToView(type);
-    final page = request.path.variables['page'];
 
-    if (view == null)
+    if (view == null) {
       return Response.notFound(
         body: {"error": "view must be top, new, best, ask show, job"},
       );
-    else if (page == null || page.isEmpty)
-      return Response.notFound(body: {"error": "please specify a page"});
+    }
+
+    String page = request.path.variables['page'];
+
+    if (page == null || page.isEmpty) {
+      page = "1";
+    }
 
     final response = await api.articles(view, int.parse(page));
     return Response.ok(response);
