@@ -14,10 +14,10 @@ class HNService implements HNApi {
   Future<List<int>> articles(ArticleView view, int page) async {
     final idsPath = _viewToPath(view);
     final fetchIds = _get(idsPath).then((r) => List<int>.from(r));
-    final itemIds = await fetchIds;
-    // final itemIds = await viewCache.fetch(view, fetchIds);
+    // final itemIds = await fetchIds;
+    final itemIds = await viewCache.fetch(view, fetchIds);
 
-    print(itemIds);
+    // print(itemIds);
     // final paginatedIds = itemIds.sublist(30 * (page - 1), 30 * page);
 
     return itemIds;
