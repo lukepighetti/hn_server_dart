@@ -1,0 +1,5 @@
+# this is pretty cool, 
+# if your server entry is bin/server.dart 
+# and it listens on 8080 this will work with any dart project
+
+FROM google/dart-runtime

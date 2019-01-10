@@ -10,4 +10,11 @@ export 'package:aqueduct/aqueduct.dart';
 
 export 'channel.dart';
 
-export 'package:hn_shared/hn_shared.dart';
+enum ArticleView {
+  topStories,
+  newStories,
+  bestStories,
+  askStories,
+  showStories,
+  jobStories,
+}

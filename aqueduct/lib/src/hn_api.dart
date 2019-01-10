@@ -2,8 +2,8 @@ import 'dart:math' as math;
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:hn_shared/hn_shared.dart';
 
+import '../hn_aqueduct.dart';
 import 'cache.dart';
 
 class HNApi {

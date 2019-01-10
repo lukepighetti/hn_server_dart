@@ -8,8 +8,6 @@ environment:
 
 dependencies:
   aqueduct: ^3.0.0
-  hn_shared:
-    path: ../shared
 
 dev_dependencies:
   test: ^1.0.0
