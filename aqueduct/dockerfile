@@ -12,5 +12,6 @@ RUN echo 'set -e' > /usr/bin/start.sh # this is the script which will run on sta
 RUN echo 'pub get' >> /usr/bin/start.sh
 RUN echo 'pub get --offline' >> /usr/bin/start.sh
 
-# start the server
-RUN echo 'dart bin/server.dart' >> /usr/bin/start.sh
+# build snapshot (reduces memory footprint ~2.5x), run server
+RUN echo 'dart --snapshot=server.dart.snapshot bin/server.dart' >> /usr/bin/start.sh
+RUN echo 'dart server.dart.snapshot' >> /usr/bin/start.sh
