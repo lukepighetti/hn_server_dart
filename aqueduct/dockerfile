@@ -3,6 +3,7 @@ FROM google/dart
 # debian-based image
 
 ENV PORT=80
+ENV INSTANCES=1
 
 WORKDIR /opt/app
 
