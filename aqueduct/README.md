@@ -1,21 +1,61 @@
-# hn_aqueduct
+# Hacker News API
 
-## Running the Application Locally
+The goal of this API is to provide the exact same data structure as the official Hacker News API but to perform the notorious nested fetching while providing a memoized cache of items.
 
-Run `aqueduct serve` from this directory to run the application. For running within an IDE, run `bin/main.dart`. By default, a configuration file named `config.yaml` will be used.
+Dockerized specifically for use with [opeNode](https://openode.io), a wonderful, low cost, Docker container host.
 
-To generate a SwaggerUI client, run `aqueduct document client`.
 
-## Running Application Tests
+## Articles
 
-To run all tests for this application, run the following in this directory:
+`http://hn-dart-api.openode.io/articles/:type/[:page]` [example](http://hn-dart-api.openode.io/articles/top/1)
+
+**:type** is `top`, `new`, `best`, `ask`, `show`, `job`
+
+**:page** is the page with a maximum of 17
+
+Response
 
 ```
-pub run test
+type Response = {
+  "by": string,
+  "descendants": int,
+  "id": int,
+  "score": int,
+  "time": secondsSinceEpoch,
+  "title": string,
+  "type": string,
+  "url": url,
+}[]
 ```
 
-The default configuration file used when testing is `config.src.yaml`. This file should be checked into version control. It also the template for configuration files used in deployment.
+## Comments
 
-## Deploying an Application
+### `http://hn-dart-api.openode.io/comments/:id` [example](http://hn-dart-api.openode.io/comments/1)
 
-See the documentation for [Deployment](https://aqueduct.io/docs/deploy/).
+**:id** is the id of the item you wish you view the comments (kids) for. You can even put a comment id in to get the comments for that id.
+
+Response
+
+```
+type Response = {
+  "by": string,
+  "descendants": int,
+  "id": int,
+  "score": int,
+  "time": secondsSinceEpoch,
+  "title": string,
+  "type": string,
+  "url": url,
+  "kids": Comment[],
+}[]
+
+type Comment = {
+  "by": string,
+  "id": int,
+  "parent": int,
+  "text": string,
+  "time": secondsSinceEpoch,
+  "type": "comment"
+  "kids": Comment[],
+}
+```
