@@ -7,7 +7,7 @@ Dockerized specifically for use with [opeNode](https://openode.io), a wonderful,
 
 ## Articles
 
-`http://hn-dart-api.openode.io/articles/:type/[:page]` [example](http://hn-dart-api.openode.io/articles/top/1)
+#### `http://hn-dart-api.openode.io/articles/:type/[:page]` [example](http://hn-dart-api.openode.io/articles/top/1)
 
 **:type** is `top`, `new`, `best`, `ask`, `show`, `job`
 
@@ -30,7 +30,7 @@ type Response = {
 
 ## Comments
 
-### `http://hn-dart-api.openode.io/comments/:id` [example](http://hn-dart-api.openode.io/comments/1)
+#### `http://hn-dart-api.openode.io/comments/:id` [example](http://hn-dart-api.openode.io/comments/1)
 
 **:id** is the id of the item you wish you view the comments (kids) for. You can even put a comment id in to get the comments for that id.
 
