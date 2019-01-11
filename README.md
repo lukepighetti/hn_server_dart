@@ -7,4 +7,4 @@ This is a work in progress.
 
 ## Server
 
-Documentation and official endpoints are available [here](aqueduct/README.md).
+Documentation and official endpoints are available [here](aqueduct/).
