@@ -32,7 +32,7 @@ type Response = {
 
 #### `https://hn-dart-api.openode.io/comments/:id` [example](https://hn-dart-api.openode.io/comments/1)
 
-**:id** is the id of the item you wish you view the comments (kids) for. You can even put a comment id in to get the comments for that id.
+**:id** is the id of the item to fetch along with its comments (kids). Any item id can be used, including a sub-comment to get a sub-list of kids.
 
 Response
 
