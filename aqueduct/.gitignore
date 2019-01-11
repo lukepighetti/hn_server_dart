@@ -13,3 +13,6 @@ Dart_Packages.xml
 .idea/
 *.aqueduct.pid
 .dart_tool
+
+# user defined
+.openode

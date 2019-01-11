@@ -1,5 +1,15 @@
-# this is pretty cool, 
-# if your server entry is bin/server.dart 
-# and it listens on 8080 this will work with any dart project
+# this Dockerfile is setup specifically to work with opeNode's Dockerfile restrictions
+FROM google/dart
+# debian-based image
 
-FROM google/dart-runtime
+ENV PORT=80
+
+WORKDIR /opt/app
+
+RUN echo 'set -e' > /usr/bin/start.sh # this is the script which will run on start
+
+RUN echo 'pub get' >> /usr/bin/start.sh
+RUN echo 'pub get --offline' >> /usr/bin/start.sh
+
+# start the server
+RUN echo 'dart bin/server.dart' >> /usr/bin/start.sh
