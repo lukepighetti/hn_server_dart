@@ -1,4 +1,6 @@
-import 'package:hn_aqueduct/hn_aqueduct.dart';
+import 'package:hn_aqueduct/channel.dart';
+import 'package:hn_aqueduct/classes.dart';
+
 import 'package:aqueduct_test/aqueduct_test.dart';
 
 export 'package:hn_aqueduct/hn_aqueduct.dart';
@@ -22,9 +24,24 @@ export 'package:aqueduct/aqueduct.dart';
 class Harness extends TestHarness<HnAqueductChannel> {
   @override
   Future onSetUp() async {
-    channel.api = HackerNewsApi();
+    channel.api = HackerNewsTest();
   }
 
   @override
   Future onTearDown() async {}
+}
+
+class HackerNewsTest implements HackerNewsInterface {
+  //
+  @override
+  Future<List<Map>> articles(ArticleView view, int page) {
+    // TODO: implement articles
+    return null;
+  }
+
+  @override
+  Future<Map> comments(int id) {
+    // TODO: implement comments
+    return null;
+  }
 }
