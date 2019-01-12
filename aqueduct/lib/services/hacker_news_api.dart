@@ -3,10 +3,10 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 
-import '../hn_aqueduct.dart';
 import 'cache.dart';
+import '../classes.dart';
 
-class HNApi {
+class HackerNewsApi implements HackerNewsInterface {
   final viewCache = Cache<ArticleView, String>();
   final itemCache = Cache<int, String>();
 

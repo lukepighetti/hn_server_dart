@@ -22,11 +22,9 @@ export 'package:aqueduct/aqueduct.dart';
 class Harness extends TestHarness<HnAqueductChannel> {
   @override
   Future onSetUp() async {
-
+    channel.api = HackerNewsApi();
   }
 
   @override
-  Future onTearDown() async {
-
-  }
+  Future onTearDown() async {}
 }

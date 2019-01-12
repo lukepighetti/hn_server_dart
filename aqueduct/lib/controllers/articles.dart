@@ -1,4 +1,7 @@
-import '../hn_aqueduct.dart';
+import 'dart:async';
+import 'package:aqueduct/aqueduct.dart';
+
+import '../classes.dart';
 
 class ArticlesController extends Controller {
   final Future<List<Map>> Function(ArticleView view, int page) articles;

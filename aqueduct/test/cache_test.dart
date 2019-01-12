@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import "package:hn_aqueduct/src/cache.dart";
+import "package:hn_aqueduct/services/cache.dart";
 
 main() async {
   test("simple string", () async {

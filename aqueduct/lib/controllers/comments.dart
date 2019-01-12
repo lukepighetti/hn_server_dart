@@ -1,4 +1,5 @@
-import '../hn_aqueduct.dart';
+import 'dart:async';
+import 'package:aqueduct/aqueduct.dart';
 
 class CommentsController extends Controller {
   final Future<Map> Function(int id) comments;

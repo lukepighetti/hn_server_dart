@@ -1,11 +1,14 @@
-import 'hn_aqueduct.dart';
+import 'package:aqueduct/aqueduct.dart';
 
-import 'src/articles_controller.dart';
-import 'src/comments_controller.dart';
+import 'controllers/articles.dart';
+import 'controllers/comments.dart';
+import 'services/hacker_news_api.dart';
 
-import 'src/hn_api.dart';
+import 'classes.dart';
 
 class HnAqueductChannel extends ApplicationChannel {
+  HackerNewsInterface api = HackerNewsApi();
+
   @override
   Future prepare() async {
     logger.onRecord.listen(
@@ -17,26 +20,13 @@ class HnAqueductChannel extends ApplicationChannel {
   Controller get entryPoint {
     final router = Router();
 
-    final api = HNApi();
     final articles = ArticlesController(api.articles);
     final comments = CommentsController(api.comments);
 
     router
       ..route("/articles/:type/[:page]").link(() => articles)
-      ..route("/comments/:id").link(() => comments)
-      ..route("/v1/user/:id").link(() => UnsupportedController());
+      ..route("/comments/:id").link(() => comments);
 
     return router;
-  }
-}
-
-class UnsupportedController with Controller {
-  @override
-  FutureOr<RequestOrResponse> handle(Request request) {
-    final arguments = request.path.variables;
-
-    return Response.ok(
-      'This path is not yet supported. Your arguments were ${arguments}',
-    );
   }
 }
